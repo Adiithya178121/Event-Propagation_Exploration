@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Event Propagation Demo</title>
+  <style>
+    .outer, .middle, .inner {
+      padding: 30px;
+      border: 2px solid black;
+      margin: 10px;
+    }
+    .outer { background-color: #f8d7da; }
+    .middle { background-color: #d1ecf1; }
+    .inner { background-color: #d4edda; }
+  </style>
+</head>
+<body>
+
+  <div class="outer" id="outerDiv">
+    Outer Div
+    <div class="middle" id="middleDiv">
+      Middle Div
+      <div class="inner" id="innerDiv">
+        Inner Div
+        <button id="innerBtn">Inner Button</button>
+      </div>
+      <button id="middleBtn">Middle Button</button>
+    </div>
+    <button id="outerBtn">Outer Button</button>
+  </div>
+
+  <script>
+    // Event propagation has two main phases:
+    // 1. Capturing Phase: Events move from the root down to the target.
+    // 2. Bubbling Phase: Events bubble up from the target to the root.
+    // You can choose the phase by setting the third argument in addEventListener: 
+    // true = capture phase, false = bubble phase (default).
+    // Utility function to show alerts
+
+    function showAlert(name, stop = false) {
+      return function(event) {
+        alert(`${name} clicked`);
+
+        if (stop) {
+          event.stopPropagation(); 
+// Stop event from bubbling or capturing further
+        }
+      };
+    }
+
+    // Add listeners to DIVs for both capturing and bubbling
+
+    document.getElementById('outerDiv').addEventListener('click', showAlert('Outer Div (Bubble)'), false);
+    document.getElementById('outerDiv').addEventListener('click', showAlert('Outer Div (Capture)'), true);
+
+    document.getElementById('middleDiv').addEventListener('click', showAlert('Middle Div (Bubble)'), false);
+    document.getElementById('middleDiv').addEventListener('click', showAlert('Middle Div (Capture)'), true);
+
+    document.getElementById('innerDiv').addEventListener('click', showAlert('Inner Div (Bubble)'), false);
+    document.getElementById('innerDiv').addEventListener('click', showAlert('Inner Div (Capture)'), true);
+
+    // Add listeners to buttons
+
+    document.getElementById('outerBtn').addEventListener('click', showAlert('Outer Button'), false);
+    document.getElementById('middleBtn').addEventListener('click', showAlert('Middle Button'), false);
+    document.getElementById('innerBtn').addEventListener('click', showAlert('Inner Button (with stopPropagation)', true), false);
+  </script>
+
+</body>
+</html>
